@@ -36,16 +36,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
+             // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
@@ -91,14 +82,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        Context context = getApplicationContext();
-        TextView text = (TextView) findViewById(R.id.text);
-        FileSource data = new FileSource(context);
-        ArrayList<Pair<String,String>> obsah = data.couples;
-        Random r = new Random();
-        int index = r.nextInt(obsah.size()-1);
 
-        text.setText(String.format("Ahééjo: %s %s", obsah.get(index).first, obsah.get(index).second));
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -113,5 +97,16 @@ public class MainActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
+    }
+
+    public void zobraz(View view) {
+        Context context = getApplicationContext();
+        TextView text = (TextView) findViewById(R.id.text);
+        FileSource data = new FileSource(context);
+        ArrayList<Pair<String,String>> obsah = data.couples;
+        Random r = new Random();
+        int index = r.nextInt(obsah.size()-1);
+
+        text.setText(String.format("EN: %s CZ: %s", obsah.get(index).first, obsah.get(index).second));
     }
 }
