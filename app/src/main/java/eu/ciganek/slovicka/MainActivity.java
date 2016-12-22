@@ -103,10 +103,10 @@ public class MainActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         TextView text = (TextView) findViewById(R.id.text);
         FileSource data = new FileSource(context);
-        ArrayList<Pair<String,String>> obsah = data.couples;
+        ArrayList<Word> obsah = data.words;
         Random r = new Random();
         int index = r.nextInt(obsah.size()-1);
 
-        text.setText(String.format("EN: %s CZ: %s", obsah.get(index).first, obsah.get(index).second));
+        text.setText(String.format("EN: %s CZ: %s", obsah.get(index).foreign, obsah.get(index).translation));
     }
 }

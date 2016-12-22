@@ -31,14 +31,16 @@
                 android:layout_height="match_parent"
                 android:id="@+id/en"
                 android:elevation="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:onClick="zobraz" />
 
             <TextView
                 android:text="TextView"
                 android:layout_width="match_parent"
                 android:id="@+id/cz"
                 android:layout_weight="1"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:onClick="zobraz" />
         </LinearLayout>
 
     </android.support.design.widget.AppBarLayout>

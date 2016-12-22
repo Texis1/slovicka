@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 final class FileSource {
 
-    ArrayList<Pair<String,String>> couples;
+    ArrayList<Word> words;
 
     /**
      * @param context Used for passing aplcation context to the function
@@ -28,7 +28,7 @@ final class FileSource {
 
         String filename;
         filename = "slovicka.csv";
-        couples = new ArrayList<Pair<String,String>>();
+        words = new ArrayList<Word>();
 
         try (FileInputStream fis = context.openFileInput(filename)) {
             isr = new InputStreamReader(fis);
@@ -36,7 +36,7 @@ final class FileSource {
             try {
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] items = line.split(",");
-                    couples.add(new Pair<>(items[0], items[1]));
+                    words.add(new Word(items[0], items[1], "", Boolean.FALSE));
 
                 }
             } catch (IOException e) {
