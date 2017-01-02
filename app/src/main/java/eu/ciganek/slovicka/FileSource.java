@@ -1,13 +1,13 @@
 package eu.ciganek.slovicka;
 
 import android.content.Context;
-import android.util.Pair;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+
 
 /**
  * Created by Tomáš on 17.12.2016.
@@ -16,9 +16,9 @@ import java.util.ArrayList;
 final class FileSource {
 
     ArrayList<Word> words;
-
+    String filename;
     /**
-     * @param context Used for passing aplcation context to the function
+     * @param context Used for passing application context to the function
      */
     FileSource(Context context) {
 
@@ -26,7 +26,6 @@ final class FileSource {
         BufferedReader bufferedReader;
         String line;
 
-        String filename;
         filename = "slovicka.csv";
         words = new ArrayList<Word>();
 
@@ -43,9 +42,11 @@ final class FileSource {
                 e.printStackTrace();
             }
             fis.close();
-        } catch (IOException e) {
+        } catch (IOException e) { // TODO: Create general way how to display error messages
             e.printStackTrace();
         }
 
     }
+
+
 }
