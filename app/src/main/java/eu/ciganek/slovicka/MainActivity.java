@@ -1,17 +1,16 @@
 package eu.ciganek.slovicka;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Pair;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +20,7 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,27 +38,42 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Slovíčka");
         setSupportActionBar(toolbar);
-
         Context context = getApplicationContext();
+
+        // Vocabulary file class
+        FileSource data = new FileSource(context);
+
+
+
         TextView text1 = (TextView) findViewById(R.id.en);
         TextView text2 = (TextView) findViewById(R.id.cz);
-        FileSource data = new FileSource(context);
-        if (data.filename !="") {
+
+        if (Objects.equals(data.filename, "")) {
+            text1.setOnClickListener(null);
+            text2.setOnClickListener(null);
+        } else {
             ArrayList<Word> obsah = data.words;
             Random r = new Random();
             int index = r.nextInt(obsah.size());
 
             text1.setText(obsah.get(index).foreign);
             text2.setText(obsah.get(index).translation);
-        } else {
-            text1.setOnClickListener(null);
-            text2.setOnClickListener(null);
         }
 
-        text2.setOnClickListener(new View.OnClickListener() { // TODO: remove to appropriate place and update accordingly
 
-            @Override
-            public void onClick(View v)
+        // filename = "slovicka.csv";
+        // Restore preferences
+        SharedPreferences settings = context.getSharedPreferences("PREFS",Context.MODE_PRIVATE);
+        String filename = settings.getString("filename", "");
+        if (Objects.equals(filename, "")) {
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("filename", filename);
+            editor.commit();
+
+        }
+
+        @Override
+           public void onClick(View v)
             {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("*/*");      //all files
@@ -66,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 int ares = 123;
                 try {
-                    startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), ares);
+                    startActivityForResult(Intent.createChooser(intent, "Select a vocabulary file "), ares);
 
 
                 } catch (android.content.ActivityNotFoundException ex) {
@@ -88,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 TextView text2 = (TextView) findViewById(R.id.cz);
 
-                text2.setText(data.get);
+                text2.setText(data.getDataString());
             }
 
         }
@@ -165,4 +180,22 @@ public class MainActivity extends AppCompatActivity {
         text1.setText(obsah.get(index).foreign);
         text2.setText(obsah.get(index).translation);
     }
+
+    public String uploadFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");      //all files
+        //intent.setType("text/xml");   //XML file only
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        int ares = 123;
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Select a vocabulary file "), ares);
+
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(MainActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
 }
