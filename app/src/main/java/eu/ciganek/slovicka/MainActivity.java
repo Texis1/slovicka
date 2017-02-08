@@ -1,11 +1,14 @@
 package eu.ciganek.slovicka;
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -19,9 +22,11 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Random;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,25 +35,56 @@ public class MainActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    private InputStream fn;
+    private Context context;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Explain to the user why we need to read the contacts
+            }
+
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},44434);
+
+            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+            // app-defined int constant that should be quite unique
+
+            return;
+        }
+
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Slovíčka");
         setSupportActionBar(toolbar);
-        Context context = getApplicationContext();
+        context = getApplicationContext();
 
-        // Vocabulary file class
-        FileSource data = new FileSource(context);
+        setContentView(R.layout.activity_main);
 
+        Intent intent = new Intent()
+                .setType("*/*")
+                .setAction(Intent.ACTION_GET_CONTENT);
+
+        startActivityForResult(Intent.createChooser(intent, "Select a file"), 123);
 
 
         TextView text1 = (TextView) findViewById(R.id.en);
         TextView text2 = (TextView) findViewById(R.id.cz);
 
-        if (Objects.equals(data.filename, "")) {
+/*        if (Objects.equals(data.filename, "")) {
             text1.setOnClickListener(null);
             text2.setOnClickListener(null);
         } else {
@@ -58,58 +94,29 @@ public class MainActivity extends AppCompatActivity {
 
             text1.setText(obsah.get(index).foreign);
             text2.setText(obsah.get(index).translation);
-        }
+        }*/
 
 
-        // filename = "slovicka.csv";
-        // Restore preferences
-        SharedPreferences settings = context.getSharedPreferences("PREFS",Context.MODE_PRIVATE);
-        String filename = settings.getString("filename", "");
-        if (Objects.equals(filename, "")) {
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("filename", filename);
-            editor.commit();
-
-        }
-
-        @Override
-           public void onClick(View v)
-            {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");      //all files
-                //intent.setType("text/xml");   //XML file only
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                int ares = 123;
-                try {
-                    startActivityForResult(Intent.createChooser(intent, "Select a vocabulary file "), ares);
-
-
-                } catch (android.content.ActivityNotFoundException ex) {
-                    // Potentially direct the user to the Market with a Dialog
-                    Toast.makeText(MainActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
-                }
-            }
-                                 }
-        );
-
-             // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        client2 = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 123) {
-            if (resultCode == RESULT_OK) {
-                TextView text2 = (TextView) findViewById(R.id.cz);
-
-                text2.setText(data.getDataString());
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123 && resultCode == RESULT_OK) {
+            Uri selectedfile = data.getData(); //The uri with the location of the file
+            try {
+                fn = getContentResolver().openInputStream(selectedfile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
             }
 
         }
-
     }
-        @Override
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -149,29 +156,39 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onStart() {
-        super.onStart();
+        super.onStart();// ATTENTION: This was auto-generated to implement the App Indexing API.
+// See https://g.co/AppIndexing/AndroidStudio for more information.
+        client2.connect();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+//        client.connect();
+        // AppIndex.AppIndexApi.start(client, getIndexApiAction());
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.start(client2, getIndexApiAction0());
     }
 
     @Override
     public void onStop() {
-        super.onStop();
+        super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
+// See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client2, getIndexApiAction0());
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
+        //AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        //client.disconnect();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client2.disconnect();
     }
 
     public void zobraz(View view) {
         Context context = getApplicationContext();
         TextView text1 = (TextView) findViewById(R.id.en);
         TextView text2 = (TextView) findViewById(R.id.cz);
-        FileSource data = new FileSource(context);
+        FileSource data = new FileSource(context, fn);
         ArrayList<Word> obsah = data.words;
         Random r = new Random();
         int index = r.nextInt(obsah.size()); // TODO: avoid using same index next time
@@ -181,21 +198,21 @@ public class MainActivity extends AppCompatActivity {
         text2.setText(obsah.get(index).translation);
     }
 
-    public String uploadFile() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");      //all files
-        //intent.setType("text/xml");   //XML file only
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        int ares = 123;
-        try {
-            startActivityForResult(Intent.createChooser(intent, "Select a vocabulary file "), ares);
 
 
-        } catch (android.content.ActivityNotFoundException ex) {
-            // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(MainActivity.this, "Please install a File Manager.", Toast.LENGTH_SHORT).show();
-        }
-        return null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction0() {
+        Thing object = new Thing.Builder()
+                .setName("Main Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
     }
-
 }
