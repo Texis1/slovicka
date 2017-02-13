@@ -2,20 +2,17 @@ package eu.ciganek.slovicka;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -30,13 +27,9 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
     private InputStream fn;
     private Context context;
+    private static final String PREFS = "Preferences";
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -47,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        // TODO: Verify if this is necessary
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
 
@@ -66,12 +59,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        // Read stored preferences
+        SharedPreferences settings = getSharedPreferences(PREFS, 0);
+
+
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Slovíčka");
         setSupportActionBar(toolbar);
         context = getApplicationContext();
-
         setContentView(R.layout.activity_main);
 
         Intent intent = new Intent()
@@ -84,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         TextView text1 = (TextView) findViewById(R.id.en);
         TextView text2 = (TextView) findViewById(R.id.cz);
 
-/*        if (Objects.equals(data.filename, "")) {
+ /*       if (Objects.equals(data.filename, "")) {
             text1.setOnClickListener(null);
             text2.setOnClickListener(null);
         } else {
@@ -94,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
             text1.setText(obsah.get(index).foreign);
             text2.setText(obsah.get(index).translation);
-        }*/
-
+        }
+*/
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.

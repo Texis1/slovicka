@@ -3,7 +3,6 @@ package eu.ciganek.slovicka;
 import android.content.Context;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
